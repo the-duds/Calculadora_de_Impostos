@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Calculadora_de_Impostos.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using StructureMap;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Calculadora_de_Impostos.Models;
-using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -29,6 +29,7 @@ namespace Calculadora_de_Impostos.Controllers
 
         // POST api/<Comportamento>
         [HttpPost]
+        
         public IActionResult Post([FromBody]Parametros parametros)
         {
             if (parametros.Metodo != "get")
@@ -53,9 +54,9 @@ namespace Calculadora_de_Impostos.Controllers
             var DepreciacaoUtilitarios = c.DeprecicacaoUtilitarios(parametros.VlrFrotaTotal, parametros.PerfilUtilitarios);
             var DespesaTotalcomDeprecicacao = c.DespesaTotalcomDeprecicacao(DepreciacaoAutomoveis, DepreciacaoUtilitarios);
             var ImpostosFolha = c.ImpostosFolha(VlrFolhaAnual);
-            var PisDebito = c.PisDebito(parametros.FaturamentoMensal);
+            var PisDebito = c.PisDebito(FaturamentoAnual);
             var PisCredito = c.PisCredito(DespesaTotalcomDeprecicacao, VlrCustosAnual);
-            var CofinsDebito = c.CofinsDebito(parametros.FaturamentoMensal);
+            var CofinsDebito = c.CofinsDebito(FaturamentoAnual);
             var CofinsCredito = c.CofinsCredito(DespesaTotalcomDeprecicacao, VlrCustosAnual);
             var VlrRecolherPis = c.VlrRecolherPis(PisDebito, PisCredito);
             var VlrRecolherConfins = c.VlrRecolherConfins(CofinsDebito, CofinsCredito);
@@ -63,45 +64,26 @@ namespace Calculadora_de_Impostos.Controllers
             var VlrAnualAproxImpostosPorcentagem = c.VlrAnualAproxImpostosPorcentagem(VlrAnualAproxdeImpostos, FaturamentoAnual);
             var NovoLucroAnual = c.NovoLucroAnual(FaturamentoAnual, VlrCustosAnual, VlrDespesasAnual, VlrFolhaAnual, ImpostosFolha, VlrAnualAproxdeImpostos);
             var EconomiaTributariaAno = c.EconomiaTributariaAno(VlrAnualAproxdeImpostos, ImpostosFolha, Ant_VlrMedioImpostosAnual, Ant_EncargoSocialAnual);
-            var AumentodaLucratividadeAno = c.AumentodaLucratividadeAno(NovoLucroAnual, Ant_LucroAnual);
-
-
-
-
-            return Ok($"FaturamentoAnual:{FaturamentoAnual}, VlrCustosAnual: {VlrCustosAnual}, VlrDespesasAnual:{VlrDespesasAnual}");
-                 
-
-
+            var AumentodaLucratividadeAno = c.AumentodaLucratividadeAno(NovoLucroAnual, Ant_LucroAnual, EconomiaTributariaAno);
             
-                
-                        //VlrFolhaAnual 
-                        //Ant_EncargoSocialAnual 
-                        //Ant_VlrMedioImpostosAnual
-                        //Ant_LucroAnual 
-                        //DepreciacaoAutomoveis 
-                        //DepreciacaoUtilitarios 
-                        //DespesaTotalcomDeprecicacao
-                        //ImpostosFolha
-                        //PisDebito
-                        //PisCredito
-                        //CofinsDebito
-                        //CofinsCredito
-                        //VlrRecolherPis
-                        //VlrRecolherConfins
-                        //VlrAnualAproxdeImpostos
-                        //VlrAnualAproxImpostosPorcentagem
-                        //NovoLucroAnual
-                        //EconomiaTributariaAno
-                        //AumentodaLucratividadeAno 
-               
-               
+            var Resultado = $"FaturamentoAnual: {FaturamentoAnual} ; VlrCustosAnual: {VlrCustosAnual} ; VlrDespesasAnual: {VlrDespesasAnual} ; " +
+                        $"VlrFolhaAnual: {VlrFolhaAnual} ; Ant_EncargoSocialAnual: {Ant_EncargoSocialAnual} ; Ant_VlrMedioImpostosAnual: {Ant_VlrMedioImpostosAnual} , " +
+                        $"Ant_LucroAnual: {Ant_LucroAnual} ; DepreciacaoAutomoveis: {DepreciacaoAutomoveis} ; DepreciacaoUtilitarios: {DepreciacaoUtilitarios} ; " +
+                        $"DespesaTotalcomDeprecicacao: {DespesaTotalcomDeprecicacao}; ImpostosFolha: {ImpostosFolha} ; PisDebito{PisDebito} ; PisCredito{PisCredito};" +
+                        $"CofinsDebito: {CofinsDebito} ; CofinsCredito:{CofinsCredito}; VlrRecolherPis: {VlrRecolherPis} ; VlrRecolherConfins: {VlrRecolherConfins} ; " +
+                        $"VlrAnualAproxdeImpostos: {VlrAnualAproxdeImpostos} ; VlrAnualAproxImpostosPorcentagem: {VlrAnualAproxImpostosPorcentagem} ; " +
+                        $"NovoLucroAnual: {NovoLucroAnual} ; EconomiaTributariaAno: {EconomiaTributariaAno} ; AumentodaLucratividadeAno: {AumentodaLucratividadeAno} ;";
+           
 
-            //var resultado = c.DespesaTotalcomDeprecicacao();
-            //if (resultado <= 0)
-            //{
-            //    return BadRequest("Parametros incorretos. O calculo não foi preciso!");
-            //}
-            //return Ok ($"O valor do lucro anual é: {resultado}");
+
+            List<string> a = new List<string>();
+            a.AddRange(Resultado.Split(";"));
+
+
+
+            return Ok(new ObjectResult(a));
+
+
 
         }
 

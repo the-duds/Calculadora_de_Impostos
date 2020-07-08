@@ -176,10 +176,10 @@ namespace Calculadora_de_Impostos
         /// Metodo que realiza calculo referente ao Débito de PIS de aliquota 1,65%
         /// </summary>
         /// <param name="FaturamentoAnual"> Valor referente ao metodo de faturamento anual.</param>
-        /// <returns>Retorna (FaturamentoAnual * 1.650m)</returns>
+        /// <returns>Retorna (FaturamentoAnual * 0.01650m)</returns>
         public decimal PisDebito(decimal FaturamentoAnual)
         {
-            return FaturamentoAnual * 1.650m;
+            return FaturamentoAnual * 0.01650m;
         }
 
         /// <summary>
@@ -187,10 +187,10 @@ namespace Calculadora_de_Impostos
         /// </summary>
         /// <param name="DespesaTotalcomDeprecicacao"> Valor referente ao metodo de Despesas totais com depreciação</param>
         /// <param name="VlrCustosAnual"> Valor referente ao metodo de Custos totais anual.</param>
-        /// <returns>Retorna ((DespesaTotalcomDeprecicacao + VlrCustosAnual) * 1.650M)</returns>
+        /// <returns>Retorna ((DespesaTotalcomDeprecicacao + VlrCustosAnual) * 0.01650M)</returns>
         public decimal PisCredito(decimal DespesaTotalcomDeprecicacao, decimal VlrCustosAnual)
         {
-            return (DespesaTotalcomDeprecicacao + VlrCustosAnual) * 1.650M;
+            return (DespesaTotalcomDeprecicacao + VlrCustosAnual) * 0.01650M;
         }
         //FIM DO CALCULO DO PIS
 
@@ -200,10 +200,10 @@ namespace Calculadora_de_Impostos
         /// Metodo que realiza calculo referente ao Débito de COFINS de aliquota 7,60%
         /// </summary>
         /// <param name="FaturamentoAnual"> Valor referente ao metodo de faturamento anual.</param>
-        /// <returns>Retorna (FaturamentoAnual * 7.60m)</returns>
+        /// <returns>Retorna (FaturamentoAnual * 0.0760m)</returns>
         public decimal CofinsDebito(decimal FaturamentoAnual)
         {
-            return FaturamentoAnual * 7.60m;
+            return FaturamentoAnual * 0.0760m;
         }
 
         /// <summary>
@@ -211,46 +211,95 @@ namespace Calculadora_de_Impostos
         /// </summary>
         /// <param name="DespesaTotalcomDeprecicacao"> Valor referente ao metodo de Despesas totais com depreciação</param>
         /// <param name="VlrCustosAnual"> Valor referente ao metodo de Custos totais anual.</param>
-        /// <returns>Retorna ((DespesaTotalcomDeprecicacao + VlrCustosAnual) * 7.60M)</returns>
+        /// <returns>Retorna ((DespesaTotalcomDeprecicacao + VlrCustosAnual) * 0.0760M)</returns>
         public decimal CofinsCredito(decimal DespesaTotalcomDeprecicacao, decimal VlrCustosAnual)
         {
-            return (DespesaTotalcomDeprecicacao + VlrCustosAnual) * 7.60M;
+            return (DespesaTotalcomDeprecicacao + VlrCustosAnual) * 0.0760M;
         }
         //FIM DO CALCULO DO COFINS
 
-        //IMPOSTOS A RECOLHER (PENDENTE)
+        //IMPOSTOS A RECOLHER
+        /// <summary>
+        /// Metodo que realiza o calculo para o valor a recolher do PIS
+        /// </summary>
+        /// <param name="PisDebito"> Valor referente ao metodo que calcula o valor de DEBITO DO PIS</param>
+        /// <param name="PisCredito"> Valor referente ao metodod que calcula o valor de CREDITO DO PIS</param>
+        /// <returns> Retorna (PisDebito-PisCredito)</returns>
         public decimal VlrRecolherPis(decimal PisDebito, decimal PisCredito)
         {
             return PisDebito-PisCredito;
         }
+        /// <summary>
+        /// Metodo que realiza o calculo para o valor a recolher do COFINS
+        /// </summary>
+        /// <param name="CofinsDebito"> Valor referente ao metodo que calcula o valor de DEBITO DO COFINS</param>
+        /// <param name="CofinsCredito"> Valor referente ao metodo que calcula o valor de CREDITO DO COFINS</param>
+        /// <returns> Retorna (CofinsDebito - CofinsCredito)</returns>
         public decimal VlrRecolherConfins(decimal CofinsDebito, decimal CofinsCredito)
         {
             return CofinsDebito - CofinsCredito;
         }
+        /// <summary>
+        /// Metodo que realiza o calculo para o valor aproximado dos IMPOSTOS A RECOLHER ANUALMENTE
+        /// </summary>
+        /// <param name="VlrRecolherPis"> Valor refernte ao metodo que calcula o valor a recolher do PIS</param>
+        /// <param name="VlrRecolherConfins">Valor referente ao metodo que calcula o valor a recolher do COFINS</param>
+        /// <returns> Retorna (VlrRecolherConfins + VlrRecolherPis)</returns>
         public decimal VlrAnualAproxdeImpostos(decimal VlrRecolherPis, decimal VlrRecolherConfins)
         {
             return VlrRecolherConfins + VlrRecolherPis;
         }
+        /// <summary>
+        /// Metodo que realiza o calculo para a porcentagem de impostos pagos anualmente comparado ao faturamento.
+        /// </summary>
+        /// <param name="VlrAnualAproxdeImpostos"> Valor referente ao metodo que calcula o valor aproximado dos impostos</param>
+        /// <param name="FaturamentoAnual"> Valor referente ao metodo que calcula o faturamento anual</param>
+        /// <returns> Retorna (VlrAnualAproxdeImpostos / FaturamentoAnual)</returns>
         public decimal VlrAnualAproxImpostosPorcentagem(decimal VlrAnualAproxdeImpostos, decimal FaturamentoAnual)
         {
             return VlrAnualAproxdeImpostos / FaturamentoAnual;
         }
-        //FIM DOS IMPOSTOS A RECOLHER (PENDENTE)
+
+        //FIM DOS IMPOSTOS A RECOLHER
 
 
         //CALCULO DE LUCRO NOVO REGIME //CALCULO DE VANTAGENS
+        /// <summary>
+        /// Metodo que realiza o calculo do Novo Lucro Anual, conforme a nova apuração fiscal da empresa.
+        /// </summary>
+        /// <param name="FaturamentoAnual"> Valor extraido do Metodo para o calculo do faturamento anual</param>
+        /// <param name="VlrCustosAnual"> Valor extraido do Metodo para o calculo dos custos anual</param>
+        /// <param name="VlrDespesasAnual"> Valor extraido do Metodo para o calculo das despesas anual.</param>
+        /// <param name="VlrFolhaAnual"> Valor extraido do Metodo para o calculo das folha anual</param>
+        /// <param name="ImpostosFolha"> Valor extraido do Metodo para o calculo dos Impostos Anuais</param>
+        /// <param name="VlrAnualAproxdeImpostos"> Valor extraido do  Metodo que realiza o calculo para o valor aproximado dos IMPOSTOS A RECOLHER ANUALMENTE</param>
+        /// <returns> Retorna (FaturamentoAnual - VlrCustosAnual - VlrDespesasAnual - VlrFolhaAnual - ImpostosFolha - VlrAnualAproxdeImpostos)</returns> 
         public decimal NovoLucroAnual(decimal FaturamentoAnual, decimal VlrCustosAnual, decimal VlrDespesasAnual, decimal VlrFolhaAnual, decimal ImpostosFolha, decimal VlrAnualAproxdeImpostos)
         {
             return FaturamentoAnual - VlrCustosAnual - VlrDespesasAnual - VlrFolhaAnual - ImpostosFolha - VlrAnualAproxdeImpostos;
         }
-
+        /// <summary>
+        /// Metodo que realiza o calculo da ECONOMIA TRIBUTARIA ANUAL COM O NOVO CALCULO DE APURAÇÃO
+        /// </summary>
+        /// <param name="VlrAnualAproxdeImpostos"> Valor extraido do  Metodo que realiza o calculo para o valor aproximado dos IMPOSTOS A RECOLHER ANUALMENTE </param>
+        /// <param name="ImpostosFolha"> Valor extraido do Metodo para o calculo dos Impostos Anuais</param>
+        /// <param name="Ant_VlrMedioImpostosAnual"> Valor referente ao valor informado de IMPOSTOS</param>
+        /// <param name="Ant_EncargoSocialAnual">Valor referente ao metodo que calcula os encargos sociais</param>
+        /// <returns> Retorna ((Ant_VlrMedioImpostosAnual + Ant_EncargoSocialAnual) - (VlrAnualAproxdeImpostos + ImpostosFolha))</returns>
         public decimal EconomiaTributariaAno(decimal VlrAnualAproxdeImpostos, decimal ImpostosFolha, decimal Ant_VlrMedioImpostosAnual, decimal Ant_EncargoSocialAnual)
         {
             return (Ant_VlrMedioImpostosAnual + Ant_EncargoSocialAnual) - (VlrAnualAproxdeImpostos + ImpostosFolha);
         }
-        public decimal AumentodaLucratividadeAno(decimal NovoLucroAnual, decimal Ant_LucroAnual)
+        /// <summary>
+        /// Metodo que realiza o calculo do AUMENTO DA LUCRATIVIDADE ANUAL COM O NOVO CALCULO DE APURAÇÃO
+        /// </summary>
+        /// <param name="NovoLucroAnual"> Valor extraido do meotod que calcula o novo lucro anual</param>
+        /// <param name="Ant_LucroAnual"> Valor refetente a informação de impostos anual</param>
+        /// <param name="EconomiaTributariaAno"> Valor extradido do mtodo que calcula a ECONOMIA TRIBUTARIA</param>
+        /// <returns> Retorna (NovoLucroAnual - Ant_LucroAnual+ EconomiaTributariaAno)</returns>
+        public decimal AumentodaLucratividadeAno(decimal NovoLucroAnual, decimal Ant_LucroAnual, decimal EconomiaTributariaAno)
         {
-            return NovoLucroAnual - Ant_LucroAnual;
+            return NovoLucroAnual - Ant_LucroAnual+ EconomiaTributariaAno;
         }
         //FIM DO CALCULO DE VANTAGENS
 
