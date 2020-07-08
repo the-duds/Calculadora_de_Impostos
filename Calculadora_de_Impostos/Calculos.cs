@@ -1,12 +1,6 @@
-﻿using Calculadora_de_Impostos.Models;
-using Microsoft.VisualBasic;
-using System.Data.Common;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-
-namespace Calculadora_de_Impostos
+﻿namespace Calculadora_de_Impostos
 {
-    public class Calculos : Parametros
+    public class Calculos
     {
         //CALCULOS PARA VALORES ANUAIS
         /// <summary>
@@ -218,6 +212,8 @@ namespace Calculadora_de_Impostos
         }
         //FIM DO CALCULO DO COFINS
 
+
+
         //IMPOSTOS A RECOLHER
         /// <summary>
         /// Metodo que realiza o calculo para o valor a recolher do PIS
@@ -229,6 +225,7 @@ namespace Calculadora_de_Impostos
         {
             return PisDebito-PisCredito;
         }
+
         /// <summary>
         /// Metodo que realiza o calculo para o valor a recolher do COFINS
         /// </summary>
@@ -239,6 +236,7 @@ namespace Calculadora_de_Impostos
         {
             return CofinsDebito - CofinsCredito;
         }
+
         /// <summary>
         /// Metodo que realiza o calculo para o valor aproximado dos IMPOSTOS A RECOLHER ANUALMENTE
         /// </summary>
@@ -249,6 +247,7 @@ namespace Calculadora_de_Impostos
         {
             return VlrRecolherConfins + VlrRecolherPis;
         }
+
         /// <summary>
         /// Metodo que realiza o calculo para a porcentagem de impostos pagos anualmente comparado ao faturamento.
         /// </summary>
@@ -259,7 +258,6 @@ namespace Calculadora_de_Impostos
         {
             return VlrAnualAproxdeImpostos / FaturamentoAnual;
         }
-
         //FIM DOS IMPOSTOS A RECOLHER
 
 
@@ -278,6 +276,7 @@ namespace Calculadora_de_Impostos
         {
             return FaturamentoAnual - VlrCustosAnual - VlrDespesasAnual - VlrFolhaAnual - ImpostosFolha - VlrAnualAproxdeImpostos;
         }
+
         /// <summary>
         /// Metodo que realiza o calculo da ECONOMIA TRIBUTARIA ANUAL COM O NOVO CALCULO DE APURAÇÃO
         /// </summary>
@@ -290,6 +289,7 @@ namespace Calculadora_de_Impostos
         {
             return (Ant_VlrMedioImpostosAnual + Ant_EncargoSocialAnual) - (VlrAnualAproxdeImpostos + ImpostosFolha);
         }
+
         /// <summary>
         /// Metodo que realiza o calculo do AUMENTO DA LUCRATIVIDADE ANUAL COM O NOVO CALCULO DE APURAÇÃO
         /// </summary>
@@ -302,8 +302,6 @@ namespace Calculadora_de_Impostos
             return NovoLucroAnual - Ant_LucroAnual+ EconomiaTributariaAno;
         }
         //FIM DO CALCULO DE VANTAGENS
-
-
 
 
         //CALCULO DO GANHO DE CAPITAL
@@ -353,9 +351,6 @@ namespace Calculadora_de_Impostos
             return ValorMedioVeiculos * (Desvalorizacao / 100);
         }
         //FIM DO CALCULO DO GRANHO DE CAPITAL (PENDENTE)
-
-
-
 
     }
 }

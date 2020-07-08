@@ -1,9 +1,5 @@
 ﻿using Calculadora_de_Impostos.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using StructureMap;
-using System.Collections.Generic;
-using System.Linq;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -35,55 +31,20 @@ namespace Calculadora_de_Impostos.Controllers
             if (parametros.Metodo != "get")
             {
                 return BadRequest("Metodo não implementado");
-                
             }
-            if (parametros.NumFrota == 0 || parametros.RegimeTribuatrio =="" || parametros.NumFrota == 0 || parametros.VlrFrotaTotal == 0 || parametros.TempoPermanencia == 0 || parametros.Desvalorizacao == 0 || parametros.FaturamentoMensal == 0 || (parametros.PerfilAutomoveis + parametros.PerfilUtilitarios) >100  || parametros.VlrCustosMensal == 0 || parametros.VlrDespesasMensal == 0 || parametros.VlrFolha == 0 || parametros.VlrImpostosMensal == 0 )
+            if (parametros.NumFrota <= 0 || parametros.RegimeTribuatrio =="" || parametros.NumFrota <= 0 || parametros.VlrFrotaTotal <= 0 || parametros.TempoPermanencia <= 0 || parametros.Desvalorizacao <= 0 || parametros.FaturamentoMensal <= 0 || (parametros.PerfilAutomoveis + parametros.PerfilUtilitarios) >100  || parametros.VlrCustosMensal <= 0 || parametros.VlrDespesasMensal <= 0 || parametros.VlrFolha <= 0 || parametros.VlrImpostosMensal <= 0 )
             {
                 return BadRequest("Parametros fora do Padrão!");
             }
-            Calculos c = new Calculos();
+            switch (parametros.RegimeTribuatrio.ToUpper().Replace(" ",""))
+            {
+                case "SIMPLESNACIONAL":
+                    SimplesNacional Simples = new SimplesNacional(parametros);
+                    return Ok(new ObjectResult(Simples.SimplesN()));
+                    
+            }
 
-            var FaturamentoAnual = c.FaturamentoAnual(parametros.FaturamentoMensal);
-            var VlrCustosAnual = c.VlrCustosAnual(parametros.VlrCustosMensal);
-            var VlrDespesasAnual = c.VlrDespesasAnual(parametros.VlrDespesasMensal);
-            var VlrFolhaAnual = c.VlrFolhaAnual(parametros.VlrFolha);
-            var Ant_EncargoSocialAnual = c.Ant_EncargoSocialAnual(parametros.VlrFolha);
-            var Ant_VlrMedioImpostosAnual = c.Ant_VlrMedioImpostosAnual(parametros.VlrImpostosMensal);
-            var Ant_LucroAnual = c.Ant_LucroAnual(FaturamentoAnual, VlrCustosAnual, VlrDespesasAnual, VlrFolhaAnual, Ant_EncargoSocialAnual, Ant_VlrMedioImpostosAnual);
-            var DepreciacaoAutomoveis = c.DepreciacaoAutomoveis(parametros.VlrFrotaTotal, parametros.PerfilAutomoveis);
-            var DepreciacaoUtilitarios = c.DeprecicacaoUtilitarios(parametros.VlrFrotaTotal, parametros.PerfilUtilitarios);
-            var DespesaTotalcomDeprecicacao = c.DespesaTotalcomDeprecicacao(DepreciacaoAutomoveis, DepreciacaoUtilitarios);
-            var ImpostosFolha = c.ImpostosFolha(VlrFolhaAnual);
-            var PisDebito = c.PisDebito(FaturamentoAnual);
-            var PisCredito = c.PisCredito(DespesaTotalcomDeprecicacao, VlrCustosAnual);
-            var CofinsDebito = c.CofinsDebito(FaturamentoAnual);
-            var CofinsCredito = c.CofinsCredito(DespesaTotalcomDeprecicacao, VlrCustosAnual);
-            var VlrRecolherPis = c.VlrRecolherPis(PisDebito, PisCredito);
-            var VlrRecolherConfins = c.VlrRecolherConfins(CofinsDebito, CofinsCredito);
-            var VlrAnualAproxdeImpostos = c.VlrAnualAproxdeImpostos(VlrRecolherPis, VlrRecolherConfins);
-            var VlrAnualAproxImpostosPorcentagem = c.VlrAnualAproxImpostosPorcentagem(VlrAnualAproxdeImpostos, FaturamentoAnual);
-            var NovoLucroAnual = c.NovoLucroAnual(FaturamentoAnual, VlrCustosAnual, VlrDespesasAnual, VlrFolhaAnual, ImpostosFolha, VlrAnualAproxdeImpostos);
-            var EconomiaTributariaAno = c.EconomiaTributariaAno(VlrAnualAproxdeImpostos, ImpostosFolha, Ant_VlrMedioImpostosAnual, Ant_EncargoSocialAnual);
-            var AumentodaLucratividadeAno = c.AumentodaLucratividadeAno(NovoLucroAnual, Ant_LucroAnual, EconomiaTributariaAno);
-            
-            var Resultado = $"FaturamentoAnual: {FaturamentoAnual} ; VlrCustosAnual: {VlrCustosAnual} ; VlrDespesasAnual: {VlrDespesasAnual} ; " +
-                        $"VlrFolhaAnual: {VlrFolhaAnual} ; Ant_EncargoSocialAnual: {Ant_EncargoSocialAnual} ; Ant_VlrMedioImpostosAnual: {Ant_VlrMedioImpostosAnual} , " +
-                        $"Ant_LucroAnual: {Ant_LucroAnual} ; DepreciacaoAutomoveis: {DepreciacaoAutomoveis} ; DepreciacaoUtilitarios: {DepreciacaoUtilitarios} ; " +
-                        $"DespesaTotalcomDeprecicacao: {DespesaTotalcomDeprecicacao}; ImpostosFolha: {ImpostosFolha} ; PisDebito{PisDebito} ; PisCredito{PisCredito};" +
-                        $"CofinsDebito: {CofinsDebito} ; CofinsCredito:{CofinsCredito}; VlrRecolherPis: {VlrRecolherPis} ; VlrRecolherConfins: {VlrRecolherConfins} ; " +
-                        $"VlrAnualAproxdeImpostos: {VlrAnualAproxdeImpostos} ; VlrAnualAproxImpostosPorcentagem: {VlrAnualAproxImpostosPorcentagem} ; " +
-                        $"NovoLucroAnual: {NovoLucroAnual} ; EconomiaTributariaAno: {EconomiaTributariaAno} ; AumentodaLucratividadeAno: {AumentodaLucratividadeAno} ;";
-           
-
-
-            List<string> a = new List<string>();
-            a.AddRange(Resultado.Split(";"));
-
-
-
-            return Ok(new ObjectResult(a));
-
-
+            return BadRequest();
 
         }
 
