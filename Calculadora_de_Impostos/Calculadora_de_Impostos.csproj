@@ -4,15 +4,5 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Google.Apis.Admin.Directory.directory_v1" Version="1.46.0.1860" />
-    <PackageReference Include="StructureMap" Version="4.7.1" />
-    <PackageReference Include="System.Collections" Version="4.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Autorizacao\" />
-  </ItemGroup>
-
 
 </Project>

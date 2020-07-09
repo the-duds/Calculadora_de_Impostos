@@ -1,12 +1,5 @@
 ﻿using Calculadora_de_Impostos.Models;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Json;
-using System.Threading.Tasks;
 
 namespace Calculadora_de_Impostos
 {
